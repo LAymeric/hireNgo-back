@@ -107,12 +107,12 @@
 			<artifactId>plume-db-querydsl-codegen</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<!-- PUT YOUR DATABASE CONNECTOR HERE -->
-		<!-- <dependency> -->
-		<!-- 	<groupId>org.mariadb.jdbc</groupId> -->
-		<!-- 	<artifactId>mariadb-java-client</artifactId> -->
-		<!-- 	<version>2.1.2</version> -->
-		<!-- </dependency> -->
+		 <!--PUT YOUR DATABASE CONNECTOR HERE-->
+		 <dependency>
+		 	<groupId>org.mariadb.jdbc</groupId>
+		 	<artifactId>mariadb-java-client</artifactId>
+		 	<version>2.1.2</version>
+		 </dependency>
 
 		<!-- jersey -->
 		<dependency>

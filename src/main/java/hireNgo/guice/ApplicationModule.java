@@ -1,5 +1,6 @@
 package hireNgo.guice;
 
+import com.coreoz.plume.db.querydsl.guice.GuiceQuerydslModule;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import hireNgo.jersey.JerseyConfigProvider;
@@ -18,7 +19,7 @@ public class ApplicationModule extends AbstractModule {
 		install(new GuiceConfModule());
 		install(new GuiceJacksonModule());
 		// database & Querydsl installation
-		//install(new GuiceQuerydslModule());
+		install(new GuiceQuerydslModule());
 
 		// prepare Jersey configuration
 		bind(ResourceConfig.class).toProvider(JerseyConfigProvider.class);
