@@ -35,6 +35,20 @@ public class UserWs {
         return userDao.fetchUserOrderByName();
     }
 
+    @GET
+    @Path("/{id}")
+    @ApiOperation("Get user by id)")
+    public User getUserById(@PathParam("id") Long id) {
+        if(id == null){
+            throw new WsException(ProjectWsError.NO_ID_SPECIFIED);
+        }
+        User user = userDao.findById(id);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        return user;
+    }
+
     @POST
     @Path("/create")
     @ApiOperation("Create New User")
