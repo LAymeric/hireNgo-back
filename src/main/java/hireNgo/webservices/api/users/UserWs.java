@@ -3,6 +3,7 @@ package hireNgo.webservices.api.users;
 import com.coreoz.plume.jersey.errors.WsException;
 import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.User;
+import hireNgo.utils.Utils;
 import hireNgo.webservices.api.users.bean.UserBean;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
@@ -51,6 +52,9 @@ public class UserWs {
         }
         if (userBean.getEmail() == null) {
             throw new WsException(ProjectWsError.WRONG_EMAIL);
+        }
+        if(!Utils.validateEmail(userBean.getEmail())){
+            throw new WsException(ProjectWsError.EMAIL_INVALID);
         }
         User user = new User();
         user.setFirstname(userBean.getFirstname());
