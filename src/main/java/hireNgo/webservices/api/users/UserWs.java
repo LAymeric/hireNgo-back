@@ -15,20 +15,20 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/users")
-@Api("Manage users web-services")
+@Api("Manage users web-services") //pour le swagger
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Singleton
+@Singleton //cela veut dire qu'il ne peut y avoir qu'une seule instance de UserWs
 public class UserWs {
 
-    private final UserDao userDao;
+    private final UserDao userDao; //notre DAO gère les appels à notre base de donnée
 
     @Inject
     public UserWs(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    @GET
+    @GET //annotation REST => pour dire que ce endPoint (path) ne s'appelle que en GET (sinon on aura une 404)
     @Path("/all")
     @ApiOperation("Get all users (order by name)")
     public List<User> getAllUsers() {
@@ -40,7 +40,7 @@ public class UserWs {
     @ApiOperation("Get user by id)")
     public User getUserById(@PathParam("id") Long id) {
         if(id == null){
-            throw new WsException(ProjectWsError.NO_ID_SPECIFIED);
+            throw new WsException(ProjectWsError.NO_ID_SPECIFIED); //on renverra cette erreur. On peut ensuite intérpréter l'erreur dans l'interface avec une notification personnalisée
         }
         User user = userDao.findById(id);
         if(user == null){
@@ -53,6 +53,8 @@ public class UserWs {
     @Path("/create")
     @ApiOperation("Create New User")
     public User createUser(UserBean userBean) {
+        //on utilise en paramètre un UserBean car utiliser l'entité ici c'est mal
+        //en effet, l'interface qui appelle notre WebService n'a pas à manipuler nos entités (comme la classe User)
         if (userBean == null) {
             throw new WsException(ProjectWsError.NO_USER);
         }
@@ -71,11 +73,11 @@ public class UserWs {
         if(userDao.findByEmail(userBean.getEmail()) != null){
             throw new WsException(ProjectWsError.EMAIL_ALREADY_USED);
         }
-        User user = new User();
+        User user = new User(); //on utilise l'entité (classe User) car c'est elle qui représentera l'objet qu'on insère en base
         user.setFirstname(userBean.getFirstname());
         user.setLastname(userBean.getLastname());
         user.setEmail(userBean.getEmail());
-        return userDao.save(user);
+        return userDao.save(user); //sauvegarde en BDD notre utilisateur
     }
 
 }
