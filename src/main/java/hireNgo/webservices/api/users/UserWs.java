@@ -68,6 +68,9 @@ public class UserWs {
         if(!Utils.validateEmail(userBean.getEmail())){
             throw new WsException(ProjectWsError.EMAIL_INVALID);
         }
+        if(userDao.findByEmail(userBean.getEmail()) != null){
+            throw new WsException(ProjectWsError.EMAIL_ALREADY_USED);
+        }
         User user = new User();
         user.setFirstname(userBean.getFirstname());
         user.setLastname(userBean.getLastname());

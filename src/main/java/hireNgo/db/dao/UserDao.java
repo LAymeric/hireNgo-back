@@ -21,4 +21,10 @@ public class UserDao extends CrudDaoQuerydsl<User> {
                 .fetch();
     }
 
+    public User findByEmail(String email){
+        return selectFrom()
+                .where(QUser.user.email.eq(email))
+                .fetchFirst();
+    }
+
 }

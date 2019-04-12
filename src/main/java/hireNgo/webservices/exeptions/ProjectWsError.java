@@ -4,6 +4,7 @@ import com.coreoz.plume.jersey.errors.WsError;
 
 public enum ProjectWsError implements WsError {
     WRONG_EMAIL,
+    EMAIL_ALREADY_USED,
     WRONG_LASTNAME,
     WRONG_FIRSTNAME,
     NO_USER,
