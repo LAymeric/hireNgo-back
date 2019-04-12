@@ -8,12 +8,10 @@ import hireNgo.webservices.api.users.bean.UserBean;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.xml.ws.WebServiceException;
 import java.util.List;
 
 @Path("/users")
