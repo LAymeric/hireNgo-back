@@ -5,6 +5,7 @@ import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.User;
 import hireNgo.utils.Utils;
 import hireNgo.webservices.api.users.bean.UserBean;
+import hireNgo.webservices.api.users.bean.UserType;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -55,6 +56,56 @@ public class UserWs {
     public User createUser(UserBean userBean) {
         //on utilise en paramètre un UserBean car utiliser l'entité ici c'est mal
         //en effet, l'interface qui appelle notre WebService n'a pas à manipuler nos entités (comme la classe User)
+        checkData(userBean);
+
+        User user = new User(); //on utilise l'entité (classe User) car c'est elle qui représentera l'objet qu'on insère en base
+        user.setFirstname(userBean.getFirstname());
+        user.setLastname(userBean.getLastname());
+        user.setEmail(userBean.getEmail());
+        user.setPassword(userBean.getPassword());
+        user.setType(userBean.getType());
+        return userDao.save(user); //sauvegarde en BDD notre utilisateur
+    }
+
+    @POST
+    @Path("/update")
+    @ApiOperation("UpdateUser User")
+    public User updateUser(UserBean userBean){
+        if (userBean == null) {
+            throw new WsException(ProjectWsError.NO_USER);
+        }
+        //Userbean => l'utilisateur que j'envoie a l'api
+        //UserDao => class qui communique avec ma base de donnée
+        //User => Entité qui represente la donnée en base renvoyé par le Dao
+
+        User user = userDao.findById(userBean.getId());
+
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+
+        checkData(userBean);
+
+
+        user.setLastname(userBean.getLastname());
+        user.setFirstname(userBean.getFirstname());
+        user.setEmail(userBean.getEmail());
+        user.setPassword(userBean.getPassword());
+        user.setAddress(userBean.getAddress());
+        user.setBirthdate(userBean.getBirthday());
+        user.setCity(userBean.getCity());
+        user.setPhone(userBean.getPhone());
+        user.setCountry(userBean.getCountry());
+        user.setPostalCode(userBean.getPostalCode());
+
+
+        return userDao.save(user);
+
+
+    }
+
+    private void checkData(UserBean userBean){
+
         if (userBean == null) {
             throw new WsException(ProjectWsError.NO_USER);
         }
@@ -73,11 +124,7 @@ public class UserWs {
         if(userDao.findByEmail(userBean.getEmail()) != null){
             throw new WsException(ProjectWsError.EMAIL_ALREADY_USED);
         }
-        User user = new User(); //on utilise l'entité (classe User) car c'est elle qui représentera l'objet qu'on insère en base
-        user.setFirstname(userBean.getFirstname());
-        user.setLastname(userBean.getLastname());
-        user.setEmail(userBean.getEmail());
-        return userDao.save(user); //sauvegarde en BDD notre utilisateur
+
     }
 
 }
