@@ -34,10 +34,6 @@ public class QService extends com.querydsl.sql.RelationalPathBase<Service> {
 
     public final com.querydsl.sql.PrimaryKey<Service> primary = createPrimaryKey(id);
 
-    public final com.querydsl.sql.ForeignKey<AssoUserService> _assoUserServiceIbfk2 = createInvForeignKey(id, "id_service");
-
-    public final com.querydsl.sql.ForeignKey<AssoCommandService> _assoCommandServiceIbfk2 = createInvForeignKey(id, "id_service");
-
     public QService(String variable) {
         super(Service.class, forVariable(variable), "null", "service");
         addMetadata();

@@ -28,10 +28,6 @@ public class QAssoCommandService extends com.querydsl.sql.RelationalPathBase<Ass
 
     public final NumberPath<Long> idService = createNumber("idService", Long.class);
 
-    public final com.querydsl.sql.ForeignKey<Service> assoCommandServiceIbfk2 = createForeignKey(idService, "id");
-
-    public final com.querydsl.sql.ForeignKey<Command> assoCommandServiceIbfk1 = createForeignKey(idCommand, "id");
-
     public QAssoCommandService(String variable) {
         super(AssoCommandService.class, forVariable(variable), "null", "asso_command_service");
         addMetadata();

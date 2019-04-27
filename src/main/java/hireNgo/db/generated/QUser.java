@@ -52,12 +52,6 @@ public class QUser extends com.querydsl.sql.RelationalPathBase<User> {
 
     public final com.querydsl.sql.PrimaryKey<User> primary = createPrimaryKey(id);
 
-    public final com.querydsl.sql.ForeignKey<AssoUserService> _assoUserServiceIbfk1 = createInvForeignKey(id, "id_user");
-
-    public final com.querydsl.sql.ForeignKey<Command> _commandIbfk2 = createInvForeignKey(id, "id_user_front");
-
-    public final com.querydsl.sql.ForeignKey<Command> _commandIbfk1 = createInvForeignKey(id, "id_user_driver");
-
     public QUser(String variable) {
         super(User.class, forVariable(variable), "null", "user");
         addMetadata();
