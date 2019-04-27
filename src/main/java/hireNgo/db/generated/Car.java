@@ -24,6 +24,9 @@ public class Car extends com.coreoz.plume.db.querydsl.crud.CrudEntityQuerydsl {
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     private Long idUser;
 
+    @Column("image")
+    private byte[] image;
+
     @Column("name")
     private String name;
 
@@ -57,6 +60,14 @@ public class Car extends com.coreoz.plume.db.querydsl.crud.CrudEntityQuerydsl {
 
     public void setIdUser(Long idUser) {
         this.idUser = idUser;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public String getName() {
