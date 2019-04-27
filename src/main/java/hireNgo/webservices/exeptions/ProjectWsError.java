@@ -9,5 +9,6 @@ public enum ProjectWsError implements WsError {
     WRONG_FIRSTNAME,
     NO_USER,
     NO_ID_SPECIFIED,
-    USER_NOT_FOUND
+    USER_NOT_FOUND,
+    NO_EMAIL
 }

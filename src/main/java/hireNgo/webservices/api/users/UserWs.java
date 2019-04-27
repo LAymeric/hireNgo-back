@@ -97,7 +97,7 @@ public class UserWs {
         //UserDao => class qui communique avec ma base de donnée
         //User => Entité qui represente la donnée en base renvoyé par le Dao
 
-        User user = userDao.findById(userBean.getId());
+        User user = userDao.findById(Long.parseLong(userBean.getId()));
 
         if(user == null){
             throw new WsException(ProjectWsError.USER_NOT_FOUND);

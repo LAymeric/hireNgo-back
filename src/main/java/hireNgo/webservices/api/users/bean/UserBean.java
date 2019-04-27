@@ -1,7 +1,7 @@
 package hireNgo.webservices.api.users.bean;
 
 public class UserBean {
-    private Long id;
+    private String id;
     private String lastname;
     private String firstname;
     private String email;
@@ -54,11 +54,11 @@ public class UserBean {
         this.address = address;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
