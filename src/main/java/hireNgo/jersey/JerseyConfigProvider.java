@@ -27,7 +27,7 @@ public class JerseyConfigProvider implements Provider<ResourceConfig> {
 		config.packages("hireNgo.webservices");
 
 		// filters configuration
-		// handle errors and exceptions
+		// handle errors and exeptions
 		config.register(WsResultExceptionMapper.class);
 		// to debug web-service requests
 		// register(LoggingFilter.class);

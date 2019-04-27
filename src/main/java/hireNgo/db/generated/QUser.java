@@ -24,15 +24,39 @@ public class QUser extends com.querydsl.sql.RelationalPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
+    public final StringPath address = createString("address");
+
+    public final StringPath birthdate = createString("birthdate");
+
+    public final StringPath city = createString("city");
+
+    public final StringPath country = createString("country");
+
     public final StringPath email = createString("email");
 
     public final StringPath firstname = createString("firstname");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isPremium = createBoolean("isPremium");
+
     public final StringPath lastname = createString("lastname");
 
+    public final StringPath password = createString("password");
+
+    public final StringPath phone = createString("phone");
+
+    public final StringPath postalCode = createString("postalCode");
+
+    public final StringPath type = createString("type");
+
     public final com.querydsl.sql.PrimaryKey<User> primary = createPrimaryKey(id);
+
+    public final com.querydsl.sql.ForeignKey<AssoUserService> _assoUserServiceIbfk1 = createInvForeignKey(id, "id_user");
+
+    public final com.querydsl.sql.ForeignKey<Command> _commandIbfk2 = createInvForeignKey(id, "id_user_front");
+
+    public final com.querydsl.sql.ForeignKey<Command> _commandIbfk1 = createInvForeignKey(id, "id_user_driver");
 
     public QUser(String variable) {
         super(User.class, forVariable(variable), "null", "user");
@@ -60,10 +84,19 @@ public class QUser extends com.querydsl.sql.RelationalPathBase<User> {
     }
 
     public void addMetadata() {
-        addMetadata(email, ColumnMetadata.named("email").withIndex(4).ofType(Types.VARCHAR).withSize(45).notNull());
-        addMetadata(firstname, ColumnMetadata.named("firstname").withIndex(3).ofType(Types.VARCHAR).withSize(45).notNull());
+        addMetadata(address, ColumnMetadata.named("address").withIndex(8).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(birthdate, ColumnMetadata.named("birthdate").withIndex(6).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(city, ColumnMetadata.named("city").withIndex(9).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(country, ColumnMetadata.named("country").withIndex(11).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(email, ColumnMetadata.named("email").withIndex(4).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(firstname, ColumnMetadata.named("firstname").withIndex(2).ofType(Types.VARCHAR).withSize(50));
         addMetadata(id, ColumnMetadata.named("id").withIndex(1).ofType(Types.BIGINT).withSize(19).notNull());
-        addMetadata(lastname, ColumnMetadata.named("lastname").withIndex(2).ofType(Types.VARCHAR).withSize(45).notNull());
+        addMetadata(isPremium, ColumnMetadata.named("is_premium").withIndex(13).ofType(Types.BIT).withSize(3));
+        addMetadata(lastname, ColumnMetadata.named("lastname").withIndex(3).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(password, ColumnMetadata.named("password").withIndex(7).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(phone, ColumnMetadata.named("phone").withIndex(5).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(postalCode, ColumnMetadata.named("postal_code").withIndex(10).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(type, ColumnMetadata.named("type").withIndex(12).ofType(Types.VARCHAR).withSize(50));
     }
 
 }
