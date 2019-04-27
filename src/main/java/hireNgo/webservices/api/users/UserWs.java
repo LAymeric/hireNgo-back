@@ -4,6 +4,7 @@ import com.coreoz.plume.jersey.errors.WsException;
 import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.User;
 import hireNgo.utils.Utils;
+import hireNgo.webservices.api.users.bean.LoginUserBean;
 import hireNgo.webservices.api.users.bean.UserBean;
 import hireNgo.webservices.api.users.bean.UserType;
 import hireNgo.webservices.exeptions.ProjectWsError;
@@ -62,10 +63,28 @@ public class UserWs {
         user.setFirstname(userBean.getFirstname());
         user.setLastname(userBean.getLastname());
         user.setEmail(userBean.getEmail());
-        user.setPassword(userBean.getPassword());
+        user.setPassword(userBean.getPassword());//todo salt paswword
         user.setType(userBean.getType());
+        user.setAddress(userBean.getAddress());
+        user.setBirthdate(userBean.getBirthday());
+        user.setCity(userBean.getCity());
+        user.setPhone(userBean.getPhone());
+        user.setCountry(userBean.getCountry());
+        user.setPostalCode(userBean.getPostalCode());
         return userDao.save(user); //sauvegarde en BDD notre utilisateur
     }
+
+    @POST
+    @Path("/login")
+    @ApiOperation("Login")
+    public User login(LoginUserBean loginUserBean) {
+        User user = userDao.findByEmailAndPassword(loginUserBean.getEmail(), loginUserBean.getPassword());
+        if(user == null){
+            throw new WsException(ProjectWsError.NO_USER);
+        }
+        return user;
+    }
+
 
     @POST
     @Path("/update")
@@ -86,11 +105,10 @@ public class UserWs {
 
         checkData(userBean);
 
-
         user.setLastname(userBean.getLastname());
         user.setFirstname(userBean.getFirstname());
         user.setEmail(userBean.getEmail());
-        user.setPassword(userBean.getPassword());
+        user.setPassword(userBean.getPassword());//todo salt paswword
         user.setAddress(userBean.getAddress());
         user.setBirthdate(userBean.getBirthday());
         user.setCity(userBean.getCity());
@@ -98,10 +116,7 @@ public class UserWs {
         user.setCountry(userBean.getCountry());
         user.setPostalCode(userBean.getPostalCode());
 
-
         return userDao.save(user);
-
-
     }
 
     private void checkData(UserBean userBean){
