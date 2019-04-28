@@ -1,10 +1,10 @@
 package hireNgo.services.user;
 
-import hireNgo.db.dao.AccompanistTypeDao;
 import hireNgo.db.dao.CarDao;
+import hireNgo.db.dao.ServiceDao;
 import hireNgo.db.dao.UserDao;
-import hireNgo.db.generated.AccompanistType;
 import hireNgo.db.generated.Car;
+import hireNgo.db.generated.Service;
 import hireNgo.db.generated.User;
 import hireNgo.webservices.api.users.bean.ReturnedUserBean;
 import hireNgo.webservices.api.users.bean.UserType;
@@ -16,14 +16,14 @@ import javax.inject.Singleton;
 public class UserService {
 
 	private final UserDao userDao;
-	private final AccompanistTypeDao accompanistTypeDao;
 	private final CarDao carDao;
+	private final ServiceDao serviceDao;
 
 	@Inject
-	public UserService(UserDao userDao, AccompanistTypeDao accompanistTypeDao, CarDao carDao) {
+	public UserService(UserDao userDao, CarDao carDao, ServiceDao serviceDao) {
 		this.userDao = userDao;
-		this.accompanistTypeDao = accompanistTypeDao;
 		this.carDao = carDao;
+		this.serviceDao = serviceDao;
 	}
 
 	public ReturnedUserBean buildReturnedUserBean(User user){
@@ -36,8 +36,8 @@ public class UserService {
 				hasFilledData = true;
 			}
 		}else if(user.getType().equals(UserType.ACCOMPANIST.name())){
-			AccompanistType accompanistType = accompanistTypeDao.fetchFirstAccompanistTypeFromUserId(user.getId());
-			if(accompanistType != null && accompanistType.getName() != null){
+			Service service = serviceDao.fetchFirstServiceForAccompanist(user.getId());
+			if(service != null){
 				hasFilledData = true;
 			}
 		}

@@ -5,6 +5,7 @@ import hireNgo.db.dao.ServiceDao;
 import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.Service;
 import hireNgo.db.generated.User;
+import hireNgo.webservices.api.services.bean.ServicesBean;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/services")
@@ -29,6 +31,28 @@ public class ServicesWs {
     public ServicesWs(UserDao userDao, ServiceDao serviceDao){
         this.userDao = userDao;
         this.serviceDao = serviceDao;
+    }
+
+    @POST
+    @Path("/update")
+    @ApiOperation("Get services by user email)")
+    public List<Service> createServicesForUserEmail(ServicesBean servicesBean) {
+        if(servicesBean == null || servicesBean.getServiceIds() == null || servicesBean.getServiceIds().size() == 0){
+            throw new WsException(ProjectWsError.NO_SERVICES);
+        }
+        User user = userDao.findByEmail(servicesBean.getUserEmail());
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        List<Service> services = new ArrayList<>();
+        for(String idService : servicesBean.getServiceIds()){
+            Service service = serviceDao.findById(Long.parseLong(idService));
+            if(service != null && service.getIsAccompanist()){
+                serviceDao.addServiceToUserAccompanist(service, user);
+                services.add(service);
+            }
+        }
+        return services;
     }
 
     @GET

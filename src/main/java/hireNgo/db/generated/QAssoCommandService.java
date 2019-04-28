@@ -28,6 +28,8 @@ public class QAssoCommandService extends com.querydsl.sql.RelationalPathBase<Ass
 
     public final NumberPath<Long> idService = createNumber("idService", Long.class);
 
+    public final NumberPath<Integer> quantity = createNumber("quantity", Integer.class);
+
     public QAssoCommandService(String variable) {
         super(AssoCommandService.class, forVariable(variable), "null", "asso_command_service");
         addMetadata();
@@ -56,6 +58,7 @@ public class QAssoCommandService extends com.querydsl.sql.RelationalPathBase<Ass
     public void addMetadata() {
         addMetadata(idCommand, ColumnMetadata.named("id_command").withIndex(1).ofType(Types.BIGINT).withSize(19));
         addMetadata(idService, ColumnMetadata.named("id_service").withIndex(2).ofType(Types.BIGINT).withSize(19));
+        addMetadata(quantity, ColumnMetadata.named("quantity").withIndex(3).ofType(Types.INTEGER).withSize(10));
     }
 
 }

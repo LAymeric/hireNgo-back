@@ -23,8 +23,8 @@ public class Service extends com.coreoz.plume.db.querydsl.crud.CrudEntityQueryds
     @Column("price")
     private String price;
 
-    @Column("productLibelle")
-    private String productLibelle;
+    @Column("quantity")
+    private Integer quantity;
 
     public Long getId() {
         return id;
@@ -58,12 +58,12 @@ public class Service extends com.coreoz.plume.db.querydsl.crud.CrudEntityQueryds
         this.price = price;
     }
 
-    public String getProductLibelle() {
-        return productLibelle;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setProductLibelle(String productLibelle) {
-        this.productLibelle = productLibelle;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     @Override
