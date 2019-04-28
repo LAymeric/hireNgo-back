@@ -3,10 +3,11 @@ package hireNgo.webservices.api.users;
 import com.coreoz.plume.jersey.errors.WsException;
 import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.User;
+import hireNgo.services.user.UserService;
 import hireNgo.utils.Utils;
 import hireNgo.webservices.api.users.bean.LoginUserBean;
+import hireNgo.webservices.api.users.bean.ReturnedUserBean;
 import hireNgo.webservices.api.users.bean.UserBean;
-import hireNgo.webservices.api.users.bean.UserType;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,10 +25,12 @@ import java.util.List;
 public class UserWs {
 
     private final UserDao userDao; //notre DAO gère les appels à notre base de donnée
+    private final UserService userService;
 
     @Inject
-    public UserWs(UserDao userDao) {
+    public UserWs(UserDao userDao, UserService userService) {
         this.userDao = userDao;
+        this.userService = userService;
     }
 
     @GET //annotation REST => pour dire que ce endPoint (path) ne s'appelle que en GET (sinon on aura une 404)
@@ -54,7 +57,7 @@ public class UserWs {
     @POST
     @Path("/create")
     @ApiOperation("Create New User")
-    public User createUser(UserBean userBean) {
+    public ReturnedUserBean createUser(UserBean userBean) {
         //on utilise en paramètre un UserBean car utiliser l'entité ici c'est mal
         //en effet, l'interface qui appelle notre WebService n'a pas à manipuler nos entités (comme la classe User)
         checkData(userBean);
@@ -71,18 +74,18 @@ public class UserWs {
         user.setPhone(userBean.getPhone());
         user.setCountry(userBean.getCountry());
         user.setPostalCode(userBean.getPostalCode());
-        return userDao.save(user); //sauvegarde en BDD notre utilisateur
+        return userService.buildReturnedUserBean(userDao.save(user)); //sauvegarde en BDD notre utilisateur
     }
 
     @POST
     @Path("/login")
     @ApiOperation("Login")
-    public User login(LoginUserBean loginUserBean) {
+    public ReturnedUserBean login(LoginUserBean loginUserBean) {
         User user = userDao.findByEmailAndPassword(loginUserBean.getEmail(), loginUserBean.getPassword());
         if(user == null){
             throw new WsException(ProjectWsError.NO_USER);
         }
-        return user;
+        return userService.buildReturnedUserBean(user);
     }
 
 

@@ -28,10 +28,6 @@ public class QAssoUserService extends com.querydsl.sql.RelationalPathBase<AssoUs
 
     public final NumberPath<Long> idUser = createNumber("idUser", Long.class);
 
-    public final com.querydsl.sql.ForeignKey<Service> assoUserServiceIbfk2 = createForeignKey(idService, "id");
-
-    public final com.querydsl.sql.ForeignKey<User> assoUserServiceIbfk1 = createForeignKey(idUser, "id");
-
     public QAssoUserService(String variable) {
         super(AssoUserService.class, forVariable(variable), "null", "asso_user_service");
         addMetadata();

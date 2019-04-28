@@ -48,12 +48,6 @@ public class QCommand extends com.querydsl.sql.RelationalPathBase<Command> {
 
     public final com.querydsl.sql.PrimaryKey<Command> primary = createPrimaryKey(id);
 
-    public final com.querydsl.sql.ForeignKey<User> commandIbfk1 = createForeignKey(idUserDriver, "id");
-
-    public final com.querydsl.sql.ForeignKey<User> commandIbfk2 = createForeignKey(idUserFront, "id");
-
-    public final com.querydsl.sql.ForeignKey<AssoCommandService> _assoCommandServiceIbfk1 = createInvForeignKey(id, "id_command");
-
     public QCommand(String variable) {
         super(Command.class, forVariable(variable), "null", "command");
         addMetadata();
