@@ -16,12 +16,12 @@ public class Car extends com.coreoz.plume.db.querydsl.crud.CrudEntityQuerydsl {
     @Column("descritpion")
     private String descritpion;
 
-    @Column("id")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id")
     private Long id;
 
-    @Column("id_user")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id_user")
     private Long idUser;
 
     @Column("image")

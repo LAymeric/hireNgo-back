@@ -25,16 +25,16 @@ public class Command extends com.coreoz.plume.db.querydsl.crud.CrudEntityQueryds
     @Column("final_price")
     private String finalPrice;
 
-    @Column("id")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id")
     private Long id;
 
-    @Column("id_user_driver")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id_user_driver")
     private Long idUserDriver;
 
-    @Column("id_user_front")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id_user_front")
     private Long idUserFront;
 
     @Column("start")
