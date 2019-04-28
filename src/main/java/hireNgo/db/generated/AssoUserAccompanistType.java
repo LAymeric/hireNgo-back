@@ -10,12 +10,12 @@ import com.querydsl.sql.Column;
 @Generated("com.coreoz.plume.db.querydsl.generation.IdBeanSerializer")
 public class AssoUserAccompanistType {
 
-    @Column("id_accompanist_type")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id_accompanist_type")
     private Long idAccompanistType;
 
-    @Column("id_user")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id_user")
     private Long idUser;
 
     public Long getIdAccompanistType() {

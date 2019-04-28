@@ -10,12 +10,12 @@ import com.querydsl.sql.Column;
 @Generated("com.coreoz.plume.db.querydsl.generation.IdBeanSerializer")
 public class AssoCommandService {
 
-    @Column("id_command")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id_command")
     private Long idCommand;
 
-    @Column("id_service")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id_service")
     private Long idService;
 
     public Long getIdCommand() {
