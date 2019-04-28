@@ -5,28 +5,25 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.querydsl.sql.Column;
 
 /**
- * AssoCommandService is a Querydsl bean type
+ * AssoAccompanistUserService is a Querydsl bean type
  */
 @Generated("com.coreoz.plume.db.querydsl.generation.IdBeanSerializer")
-public class AssoCommandService {
+public class AssoAccompanistUserService {
 
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
-    @Column("id_command")
-    private Long idCommand;
+    @Column("id_accompanist_user")
+    private Long idAccompanistUser;
 
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
     @Column("id_service")
     private Long idService;
 
-    @Column("quantity")
-    private Integer quantity;
-
-    public Long getIdCommand() {
-        return idCommand;
+    public Long getIdAccompanistUser() {
+        return idAccompanistUser;
     }
 
-    public void setIdCommand(Long idCommand) {
-        this.idCommand = idCommand;
+    public void setIdAccompanistUser(Long idAccompanistUser) {
+        this.idAccompanistUser = idAccompanistUser;
     }
 
     public Long getIdService() {
@@ -35,14 +32,6 @@ public class AssoCommandService {
 
     public void setIdService(Long idService) {
         this.idService = idService;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
 }

@@ -10,9 +10,12 @@ import com.querydsl.sql.Column;
 @Generated("com.coreoz.plume.db.querydsl.generation.IdBeanSerializer")
 public class Service extends com.coreoz.plume.db.querydsl.crud.CrudEntityQuerydsl {
 
-    @Column("id")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id")
     private Long id;
+
+    @Column("isAccompanist")
+    private Boolean isAccompanist;
 
     @Column("name")
     private String name;
@@ -20,8 +23,8 @@ public class Service extends com.coreoz.plume.db.querydsl.crud.CrudEntityQueryds
     @Column("price")
     private String price;
 
-    @Column("productLibelle")
-    private String productLibelle;
+    @Column("quantity")
+    private Integer quantity;
 
     public Long getId() {
         return id;
@@ -29,6 +32,14 @@ public class Service extends com.coreoz.plume.db.querydsl.crud.CrudEntityQueryds
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Boolean getIsAccompanist() {
+        return isAccompanist;
+    }
+
+    public void setIsAccompanist(Boolean isAccompanist) {
+        this.isAccompanist = isAccompanist;
     }
 
     public String getName() {
@@ -47,12 +58,12 @@ public class Service extends com.coreoz.plume.db.querydsl.crud.CrudEntityQueryds
         this.price = price;
     }
 
-    public String getProductLibelle() {
-        return productLibelle;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setProductLibelle(String productLibelle) {
-        this.productLibelle = productLibelle;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     @Override

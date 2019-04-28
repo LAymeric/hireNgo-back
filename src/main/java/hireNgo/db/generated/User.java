@@ -28,8 +28,8 @@ public class User extends com.coreoz.plume.db.querydsl.crud.CrudEntityQuerydsl {
     @Column("firstname")
     private String firstname;
 
-    @Column("id")
     @JsonSerialize(using=com.fasterxml.jackson.databind.ser.std.ToStringSerializer.class)
+    @Column("id")
     private Long id;
 
     @Column("is_premium")
@@ -46,6 +46,9 @@ public class User extends com.coreoz.plume.db.querydsl.crud.CrudEntityQuerydsl {
 
     @Column("postal_code")
     private String postalCode;
+
+    @Column("registration_date")
+    private java.time.LocalDate registrationDate;
 
     @Column("type")
     private String type;
@@ -144,6 +147,14 @@ public class User extends com.coreoz.plume.db.querydsl.crud.CrudEntityQuerydsl {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+    }
+
+    public java.time.LocalDate getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(java.time.LocalDate registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     public String getType() {
