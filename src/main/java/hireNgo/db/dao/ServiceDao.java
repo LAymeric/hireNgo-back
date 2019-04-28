@@ -25,5 +25,10 @@ public class ServiceDao extends CrudDaoQuerydsl<Service> {
                 .where(QService.service.id.eq(QAssoUserService.assoUserService.idService))
                 .fetch();
     }
+    public List<Service> fetchServicesByIsAccompanist(boolean isAccompanist){
+        return selectFrom()
+                .where(QService.service.isAccompanist.eq(isAccompanist))
+                .fetch();
+    }
 
 }

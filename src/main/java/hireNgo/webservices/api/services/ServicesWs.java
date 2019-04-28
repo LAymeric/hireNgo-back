@@ -34,7 +34,7 @@ public class ServicesWs {
     @GET
     @Path("/{email}")
     @ApiOperation("Get services by user email)")
-    public List<Service> getUserById(@PathParam("email") String email) {
+    public List<Service> getServicesByUserMail(@PathParam("email") String email) {
         if(email == null){
             throw new WsException(ProjectWsError.NO_EMAIL);
         }
@@ -43,6 +43,13 @@ public class ServicesWs {
             throw new WsException(ProjectWsError.USER_NOT_FOUND);
         }
         return serviceDao.fetchByUserId(user.getId());
+    }
+
+    @GET
+    @Path("/accompanist")
+    @ApiOperation("Get services by user email)")
+    public List<Service> getServicesForAccompanists() {
+        return serviceDao.fetchServicesByIsAccompanist(true);
     }
 
 }
