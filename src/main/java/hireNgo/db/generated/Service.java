@@ -20,6 +20,9 @@ public class Service extends com.coreoz.plume.db.querydsl.crud.CrudEntityQueryds
     @Column("name")
     private String name;
 
+    @Column("picture")
+    private byte[] picture;
+
     @Column("price")
     private String price;
 
@@ -48,6 +51,14 @@ public class Service extends com.coreoz.plume.db.querydsl.crud.CrudEntityQueryds
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
     }
 
     public String getPrice() {

@@ -30,6 +30,8 @@ public class QService extends com.querydsl.sql.RelationalPathBase<Service> {
 
     public final StringPath name = createString("name");
 
+    public final SimplePath<byte[]> picture = createSimple("picture", byte[].class);
+
     public final StringPath price = createString("price");
 
     public final NumberPath<Integer> quantity = createNumber("quantity", Integer.class);
@@ -63,8 +65,9 @@ public class QService extends com.querydsl.sql.RelationalPathBase<Service> {
 
     public void addMetadata() {
         addMetadata(id, ColumnMetadata.named("id").withIndex(1).ofType(Types.BIGINT).withSize(19).notNull());
-        addMetadata(isAccompanist, ColumnMetadata.named("isAccompanist").withIndex(4).ofType(Types.BIT).withSize(3).notNull());
+        addMetadata(isAccompanist, ColumnMetadata.named("isAccompanist").withIndex(6).ofType(Types.BIT).withSize(3).notNull());
         addMetadata(name, ColumnMetadata.named("name").withIndex(2).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(picture, ColumnMetadata.named("picture").withIndex(4).ofType(Types.LONGVARBINARY).withSize(65535));
         addMetadata(price, ColumnMetadata.named("price").withIndex(3).ofType(Types.VARCHAR).withSize(50));
         addMetadata(quantity, ColumnMetadata.named("quantity").withIndex(5).ofType(Types.INTEGER).withSize(10));
     }
