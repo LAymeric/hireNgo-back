@@ -48,6 +48,8 @@ public class QUser extends com.querydsl.sql.RelationalPathBase<User> {
 
     public final StringPath postalCode = createString("postalCode");
 
+    public final DatePath<java.time.LocalDate> registrationDate = createDate("registrationDate", java.time.LocalDate.class);
+
     public final StringPath type = createString("type");
 
     public final com.querydsl.sql.PrimaryKey<User> primary = createPrimaryKey(id);
@@ -87,9 +89,10 @@ public class QUser extends com.querydsl.sql.RelationalPathBase<User> {
         addMetadata(id, ColumnMetadata.named("id").withIndex(1).ofType(Types.BIGINT).withSize(19).notNull());
         addMetadata(isPremium, ColumnMetadata.named("is_premium").withIndex(13).ofType(Types.BIT).withSize(3));
         addMetadata(lastname, ColumnMetadata.named("lastname").withIndex(3).ofType(Types.VARCHAR).withSize(50));
-        addMetadata(password, ColumnMetadata.named("password").withIndex(7).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(password, ColumnMetadata.named("password").withIndex(7).ofType(Types.VARCHAR).withSize(255));
         addMetadata(phone, ColumnMetadata.named("phone").withIndex(5).ofType(Types.VARCHAR).withSize(50));
         addMetadata(postalCode, ColumnMetadata.named("postal_code").withIndex(10).ofType(Types.VARCHAR).withSize(50));
+        addMetadata(registrationDate, ColumnMetadata.named("registration_date").withIndex(14).ofType(Types.DATE).withSize(10));
         addMetadata(type, ColumnMetadata.named("type").withIndex(12).ofType(Types.VARCHAR).withSize(50));
     }
 
