@@ -55,7 +55,7 @@ public class CarsWs {
     @POST
     @Path("/create")
     @ApiOperation("Get services by user email)")
-    public Car getUserById(CarBean car) {
+    public Car createCar(CarBean car) {
         if(car == null){
             throw new WsException(ProjectWsError.NO_CAR);
         }
@@ -73,6 +73,31 @@ public class CarsWs {
             newCar.setImage(byteArray);
         }
         return carDao.save(newCar);
+    }
+
+    @POST
+    @Path("/edit")
+    @ApiOperation("Get services by user email)")
+    public Car editCar(CarBean car) {
+        if(car == null){
+            throw new WsException(ProjectWsError.NO_CAR);
+        }
+        User user = userDao.findByEmail(car.getUserEmail());
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        Car toEdit = carDao.fetchFirstCarFromUserId(user.getId());
+        if(toEdit == null){
+            throw new WsException(ProjectWsError.NO_CAR);
+        }
+        toEdit.setBrand(car.getBrand());
+        toEdit.setName(car.getName());
+        toEdit.setDescritpion(car.getDescription());
+        if(car.getBase64() != null){
+            byte[] byteArray = Base64.decodeBase64(car.getBase64());
+            toEdit.setImage(byteArray);
+        }
+        return carDao.save(toEdit);
     }
 
 }
