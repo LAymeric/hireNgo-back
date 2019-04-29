@@ -12,5 +12,6 @@ public enum ProjectWsError implements WsError {
     USER_NOT_FOUND,
     NO_SERVICES,
     NO_CAR,
-    NO_EMAIL
+    NO_EMAIL,
+    NO_COMMAND
 }
