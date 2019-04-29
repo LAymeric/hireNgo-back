@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/cars")
 @Api("Manage cars web-services") //pour le swagger
@@ -29,6 +30,26 @@ public class CarsWs {
     public CarsWs(CarDao carDao, UserDao userDao){
         this.carDao = carDao;
         this.userDao = userDao;
+    }
+
+    @GET
+    @Path("/{email}")
+    @ApiOperation("Get services by user email)")
+    public CarBean getServicesByUserMail(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        CarBean carBean = new CarBean();
+        Car car = carDao.fetchFirstCarFromUserId(user.getId());
+        carBean.setBrand(car.getBrand());
+        carBean.setDescription(car.getDescritpion());
+        carBean.setName(car.getName());
+        carBean.setBase64(Base64.encodeBase64String(car.getImage()));
+        return carBean;
     }
 
     @POST
@@ -48,7 +69,7 @@ public class CarsWs {
         newCar.setDescritpion(car.getDescription());
         newCar.setIdUser(user.getId());
         if(car.getBase64() != null){
-            byte[] byteArray = Base64.decodeBase64(car.getBase64().getBytes());
+            byte[] byteArray = Base64.decodeBase64(car.getBase64());
             newCar.setImage(byteArray);
         }
         return carDao.save(newCar);
