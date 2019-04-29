@@ -9,14 +9,13 @@ import hireNgo.webservices.api.command.bean.CommandBean;
 import hireNgo.webservices.api.users.bean.CommandStatus;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/command")
 @Api("Manage command web-services") //pour le swagger
@@ -33,6 +32,13 @@ public class CommandWs {
 
         this.userDao = userDao;
         this.commandDao = commandDao;
+    }
+
+    @GET
+    @Path("/available")
+    @ApiOperation("Get commands available")
+    public List<Command> getAvailableCommands() {
+        return commandDao.findAllByStatus(CommandStatus.WAITING);
     }
 
     @POST
