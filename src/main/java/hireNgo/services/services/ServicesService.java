@@ -1,14 +1,8 @@
 package hireNgo.services.services;
 
-import hireNgo.db.dao.CarDao;
 import hireNgo.db.dao.ServiceDao;
-import hireNgo.db.dao.UserDao;
-import hireNgo.db.generated.Car;
 import hireNgo.db.generated.Service;
-import hireNgo.db.generated.User;
 import hireNgo.webservices.api.services.bean.ReturnedServiceBean;
-import hireNgo.webservices.api.users.bean.ReturnedUserBean;
-import hireNgo.webservices.api.users.bean.UserType;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.inject.Inject;
