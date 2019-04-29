@@ -22,8 +22,12 @@ public class ServicesService {
 		ReturnedServiceBean serviceBean = new ReturnedServiceBean();
 		serviceBean.setId(service.getId().toString());
 		serviceBean.setName(service.getName());
-		serviceBean.setBase64Image(Base64.encodeBase64String(service.getPicture()));
-		serviceBean.setQuantity(service.getQuantity().toString());
+		if(service.getPicture() != null){
+			serviceBean.setBase64Image(Base64.encodeBase64String(service.getPicture()));
+		}
+		if(service.getQuantity() != null){
+			serviceBean.setQuantity(service.getQuantity().toString());
+		}
 		serviceBean.setPrice(service.getPrice() + " €");
 		return serviceBean;
 	}

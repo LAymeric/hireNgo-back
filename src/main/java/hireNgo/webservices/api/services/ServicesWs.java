@@ -53,7 +53,7 @@ public class ServicesWs {
         List<Service> services = new ArrayList<>();
         for(String idService : servicesBean.getServiceIds()){
             Service service = serviceDao.findById(Long.parseLong(idService));
-            if(service != null && service.getIsAccompanist()){
+            if(service != null){
                 serviceDao.addServiceToUserAccompanist(service, user);
                 services.add(service);
             }
@@ -73,6 +73,23 @@ public class ServicesWs {
             throw new WsException(ProjectWsError.USER_NOT_FOUND);
         }
         return serviceDao.fetchByUserId(user.getId()).stream().map(servicesService::buildReturnedServicerBean).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/available/{email}")
+    @ApiOperation("Get services by user email)")
+    public List<ReturnedServiceBean> getServicesAvailableForUser(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        List<Service> alreadyHas = serviceDao.fetchAllForUser(user.getId());
+        List<Service> all = serviceDao.findAll();
+        List<Service> finalList = all.stream().filter(item -> !alreadyHas.contains(item)).collect(Collectors.toList());
+        return finalList.stream().map(servicesService::buildReturnedServicerBean).collect(Collectors.toList());
     }
 
     @GET
