@@ -5,7 +5,9 @@ import hireNgo.db.dao.CommandDao;
 import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.Command;
 import hireNgo.db.generated.User;
+import hireNgo.services.command.CommandService;
 import hireNgo.webservices.api.command.bean.CommandBean;
+import hireNgo.webservices.api.command.bean.ReturnedCommandBean;
 import hireNgo.webservices.api.users.bean.CommandStatus;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
@@ -16,6 +18,7 @@ import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/command")
 @Api("Manage command web-services") //pour le swagger
@@ -26,19 +29,21 @@ public class CommandWs {
 
     private final UserDao userDao;
     private final CommandDao commandDao;
+    private final CommandService commandService;
 
     @Inject
-    public CommandWs(UserDao userDao, CommandDao commandDao){
+    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService){
 
         this.userDao = userDao;
         this.commandDao = commandDao;
+        this.commandService = commandService;
     }
 
     @GET
     @Path("/available")
     @ApiOperation("Get commands available")
-    public List<Command> getAvailableCommands() {
-        return commandDao.findAllByStatus(CommandStatus.WAITING);
+    public List<ReturnedCommandBean> getAvailableCommands() {
+        return commandDao.findAllByStatus(CommandStatus.WAITING).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
     }
 
     @POST
