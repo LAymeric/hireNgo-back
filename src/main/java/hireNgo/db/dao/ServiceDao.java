@@ -39,18 +39,23 @@ public class ServiceDao extends CrudDaoQuerydsl<Service> {
     }
     public Service fetchFirstServiceForAccompanist(Long userId){
         return selectFrom()
-                .from(QAssoUserService.assoUserService)
-                .join(QAssoUserService.assoUserService)
+                .from(QAssoAccompanistUserService.assoAccompanistUserService)
+                .join(QAssoAccompanistUserService.assoAccompanistUserService)
                 .where(QService.service.isAccompanist.eq(true))
-                .where(QAssoUserService.assoUserService.idUser.eq(userId))
-                .where(QService.service.id.eq(QAssoUserService.assoUserService.idService))
+                .where(QAssoAccompanistUserService.assoAccompanistUserService.idAccompanistUser.eq(userId))
+                .where(QService.service.id.eq(QAssoAccompanistUserService.assoAccompanistUserService.idService))
                 .fetchFirst();
     }
-
 
     public void addServiceToUserAccompanist(Service service, User user){
         transactionManager.insert(QAssoUserService.assoUserService)
                 .columns(QAssoUserService.assoUserService.idService, QAssoUserService.assoUserService.idUser)
+                .values(service.getId(), user.getId()).execute();
+    }
+
+    public void addServiceToUserDriver(Service service, User user){
+        transactionManager.insert(QAssoAccompanistUserService.assoAccompanistUserService)
+                .columns(QAssoAccompanistUserService.assoAccompanistUserService.idService, QAssoAccompanistUserService.assoAccompanistUserService.idAccompanistUser)
                 .values(service.getId(), user.getId()).execute();
     }
 
