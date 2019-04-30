@@ -77,6 +77,7 @@ public class CommandWs {
 
         if(user.getIsPremium()){
             newCommand.setStatus(CommandStatus.INCOMPLETE.name());
+            //Todo services
         }else{
             newCommand.setStatus(CommandStatus.WAITING.name());
         }
@@ -88,6 +89,9 @@ public class CommandWs {
         newCommand.setEndTime("");//todo calculer avec start time + duration
         newCommand.setStart(commandBean.getStart());
         newCommand.setStartTime(commandBean.getStartTime());
+        //todo calculate price with services
+        Double price = Long.valueOf(newCommand.getDistance()) * 2.5;
+        newCommand.setFinalPrice(String.valueOf(price));
 
        return commandDao.save(newCommand);
     }
@@ -111,6 +115,28 @@ public class CommandWs {
         }
         toUptadeCommand.setStatus(CommandStatus.IN_PROGRESS.name());
         toUptadeCommand.setIdUserDriver(user.getId());
+       return commandDao.save(toUptadeCommand);
+    }
+
+    @POST
+    @Path("/end")
+    public Command endComande(ChooseCommandBean commandBean){
+        //Check si le front a envoyé une commande
+        if(commandBean == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        User user = userDao.findByEmail(commandBean.getEmail());
+        //Check si l'utilisateur existe
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        Command toUptadeCommand = commandDao.findById(Long.parseLong(commandBean.getCommandId()));
+
+        if(toUptadeCommand == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        toUptadeCommand.setStatus(CommandStatus.FINISHED.name());
+
        return commandDao.save(toUptadeCommand);
     }
 
