@@ -19,6 +19,13 @@ public class CommandDao extends CrudDaoQuerydsl<Command> {
         return selectFrom()
                 .where(QCommand.command.status.eq(commandStatus.name()))
                 .fetch();
+    }
+
+    public List<Command> findAllByStatusAndUserDriver(CommandStatus commandStatus, Long idDriver){
+        return selectFrom()
+                .where(QCommand.command.status.eq(commandStatus.name()))
+                .where(QCommand.command.idUserDriver.eq(idDriver))
+                .fetch();
 
     }
 }

@@ -6,6 +6,7 @@ import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.Command;
 import hireNgo.db.generated.User;
 import hireNgo.services.command.CommandService;
+import hireNgo.webservices.api.command.bean.ChooseCommandBean;
 import hireNgo.webservices.api.command.bean.CommandBean;
 import hireNgo.webservices.api.command.bean.ReturnedCommandBean;
 import hireNgo.webservices.api.users.bean.CommandStatus;
@@ -46,6 +47,20 @@ public class CommandWs {
         return commandDao.findAllByStatus(CommandStatus.WAITING).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
     }
 
+    @GET
+    @Path("/current/{email}")
+    @ApiOperation("Get commands available")
+    public List<ReturnedCommandBean> getCurrentCommands(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        return commandDao.findAllByStatusAndUserDriver(CommandStatus.IN_PROGRESS, user.getId()).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
+    }
+
     @POST
     @Path("/new")
     public Command creatComande(CommandBean commandBean){
@@ -75,6 +90,28 @@ public class CommandWs {
         newCommand.setStartTime(commandBean.getStartTime());
 
        return commandDao.save(newCommand);
+    }
+
+    @POST
+    @Path("/choose")
+    public Command chooseComande(ChooseCommandBean commandBean){
+        //Check si le front a envoyé une commande
+        if(commandBean == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        User user = userDao.findByEmail(commandBean.getEmail());
+        //Check si l'utilisateur existe
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        Command toUptadeCommand = commandDao.findById(Long.parseLong(commandBean.getCommandId()));
+
+        if(toUptadeCommand == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        toUptadeCommand.setStatus(CommandStatus.IN_PROGRESS.name());
+        toUptadeCommand.setIdUserDriver(user.getId());
+       return commandDao.save(toUptadeCommand);
     }
 
 }
