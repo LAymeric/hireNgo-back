@@ -7,7 +7,16 @@ public class ReturnedCommandBean {
     private String userName;
     private String duration;
     private String distance;
+    private String price;
     private String id;
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
     public String getId() {
         return id;

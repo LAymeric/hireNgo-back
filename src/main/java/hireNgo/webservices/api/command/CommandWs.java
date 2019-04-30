@@ -48,6 +48,20 @@ public class CommandWs {
     }
 
     @GET
+    @Path("/history/{email}")
+    @ApiOperation("Get commands available")
+    public List<ReturnedCommandBean> getHistoryCommands(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        return commandDao.findAllByStatusAndUserDriver(CommandStatus.FINISHED, user.getId()).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
+    }
+
+    @GET
     @Path("/current/{email}")
     @ApiOperation("Get commands available")
     public List<ReturnedCommandBean> getCurrentCommands(@PathParam("email") String email) {
@@ -120,7 +134,7 @@ public class CommandWs {
 
     @POST
     @Path("/end")
-    public Command endComande(ChooseCommandBean commandBean){
+    public Command endCommand(ChooseCommandBean commandBean){
         //Check si le front a envoyé une commande
         if(commandBean == null){
             throw new WsException(ProjectWsError.NO_COMMAND);

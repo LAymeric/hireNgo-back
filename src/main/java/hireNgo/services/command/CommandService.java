@@ -27,6 +27,7 @@ public class CommandService {
         returnedCommandBean.setEnd(command.getEnd());
         returnedCommandBean.setStartTime(command.getStartTime());
         returnedCommandBean.setId(command.getId().toString());
+        returnedCommandBean.setPrice(command.getFinalPrice());
         User user = userDao.findById(command.getIdUserFront());
         returnedCommandBean.setUserName(user.getFirstname() + " " + user.getLastname());
         return returnedCommandBean;
