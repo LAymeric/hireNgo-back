@@ -23,6 +23,15 @@ public class ServiceDao extends CrudDaoQuerydsl<Service> {
                 .fetch();
     }
 
+    public List<Service> fetchAllForUser(Long idUser){
+        return selectFrom()
+                .from(QAssoUserService.assoUserService)
+                .join(QAssoUserService.assoUserService)
+                .where(QAssoUserService.assoUserService.idUser.eq(idUser))
+                .where(QService.service.id.eq(QAssoUserService.assoUserService.idService))
+                .fetch();
+    }
+
     public List<Service> fetchServicesByIsAccompanist(boolean isAccompanist){
         return selectFrom()
                 .where(QService.service.isAccompanist.eq(isAccompanist))
@@ -42,7 +51,7 @@ public class ServiceDao extends CrudDaoQuerydsl<Service> {
     public void addServiceToUserAccompanist(Service service, User user){
         transactionManager.insert(QAssoUserService.assoUserService)
                 .columns(QAssoUserService.assoUserService.idService, QAssoUserService.assoUserService.idUser)
-                .values(service.getId(), user.getId());
+                .values(service.getId(), user.getId()).execute();
     }
 
 }

@@ -1,11 +1,20 @@
 package hireNgo.webservices.api.cars.bean;
 
 public class CarBean {
+    private String id;
     private String name;
     private String brand;
     private String description;
     private String userEmail;
     private String base64;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getBase64() {
         return base64;

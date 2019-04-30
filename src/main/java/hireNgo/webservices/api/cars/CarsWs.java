@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/cars")
 @Api("Manage cars web-services") //pour le swagger
@@ -31,10 +32,30 @@ public class CarsWs {
         this.userDao = userDao;
     }
 
+    @GET
+    @Path("/{email}")
+    @ApiOperation("Get services by user email)")
+    public CarBean getServicesByUserMail(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        CarBean carBean = new CarBean();
+        Car car = carDao.fetchFirstCarFromUserId(user.getId());
+        carBean.setBrand(car.getBrand());
+        carBean.setDescription(car.getDescritpion());
+        carBean.setName(car.getName());
+        carBean.setBase64(Base64.encodeBase64String(car.getImage()));
+        return carBean;
+    }
+
     @POST
     @Path("/create")
     @ApiOperation("Get services by user email)")
-    public Car getUserById(CarBean car) {
+    public Car createCar(CarBean car) {
         if(car == null){
             throw new WsException(ProjectWsError.NO_CAR);
         }
@@ -48,10 +69,35 @@ public class CarsWs {
         newCar.setDescritpion(car.getDescription());
         newCar.setIdUser(user.getId());
         if(car.getBase64() != null){
-            byte[] byteArray = Base64.decodeBase64(car.getBase64().getBytes());
+            byte[] byteArray = Base64.decodeBase64(car.getBase64());
             newCar.setImage(byteArray);
         }
         return carDao.save(newCar);
+    }
+
+    @POST
+    @Path("/edit")
+    @ApiOperation("Get services by user email)")
+    public Car editCar(CarBean car) {
+        if(car == null){
+            throw new WsException(ProjectWsError.NO_CAR);
+        }
+        User user = userDao.findByEmail(car.getUserEmail());
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        Car toEdit = carDao.fetchFirstCarFromUserId(user.getId());
+        if(toEdit == null){
+            throw new WsException(ProjectWsError.NO_CAR);
+        }
+        toEdit.setBrand(car.getBrand());
+        toEdit.setName(car.getName());
+        toEdit.setDescritpion(car.getDescription());
+        if(car.getBase64() != null){
+            byte[] byteArray = Base64.decodeBase64(car.getBase64());
+            toEdit.setImage(byteArray);
+        }
+        return carDao.save(toEdit);
     }
 
 }
