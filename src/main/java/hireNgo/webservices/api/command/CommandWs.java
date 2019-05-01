@@ -12,6 +12,8 @@ import hireNgo.services.command.CommandService;
 import hireNgo.webservices.api.command.bean.ChooseCommandBean;
 import hireNgo.webservices.api.command.bean.CommandBean;
 import hireNgo.webservices.api.command.bean.ReturnedCommandBean;
+import hireNgo.webservices.api.command.bean.UpdateCommandBean;
+import hireNgo.webservices.api.services.bean.ServiceBean;
 import hireNgo.webservices.api.users.bean.CommandStatus;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
@@ -158,7 +160,7 @@ public class CommandWs {
         newCommand.setStart(commandBean.getStart());
         newCommand.setStartTime(commandBean.getStartTime());
         //todo calculate price with services
-        Double price = Long.valueOf(newCommand.getDistance()) * 2.5;
+        Double price = Double.valueOf(newCommand.getDistance()) * 2.5;
         newCommand.setFinalPrice(String.valueOf(price));
 
        return commandDao.save(newCommand);
@@ -166,7 +168,7 @@ public class CommandWs {
 
     @POST
     @Path("/choose")
-    public Command chooseComande(ChooseCommandBean commandBean){
+    public Command chooseCommand(ChooseCommandBean commandBean){
         //Check si le front a envoyé une commande
         if(commandBean == null){
             throw new WsException(ProjectWsError.NO_COMMAND);
@@ -185,6 +187,35 @@ public class CommandWs {
         toUptadeCommand.setIdUserDriver(user.getId());
        return commandDao.save(toUptadeCommand);
     }
+
+
+    @POST
+    @Path("/update")
+    public ReturnedCommandBean updateCommand(UpdateCommandBean updateCommandBean){
+        //Check si le front a envoyé une commande
+        if(updateCommandBean == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        User user = userDao.findById(Long.valueOf(updateCommandBean.getIdUser()));
+        //Check si l'utilisateur existe
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        Command toUptadeCommand = commandDao.findById(Long.parseLong(updateCommandBean.getIdCommand()));
+
+        if(toUptadeCommand == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        toUptadeCommand.setStatus(CommandStatus.WAITING.name());
+        for(ServiceBean serviceBean : updateCommandBean.getServices()){
+            serviceDao.addServiceToCommand(toUptadeCommand.getId(), Long.parseLong(serviceBean.getIdService()), serviceBean.getQuantity());
+        }
+
+        //todo calculate price
+
+        return commandService.buildReturnedCommandBean(commandDao.save(toUptadeCommand));
+    }
+
 
     @POST
     @Path("/chooseForAccompanist")

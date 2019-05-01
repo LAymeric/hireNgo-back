@@ -83,6 +83,13 @@ public class ServiceDao extends CrudDaoQuerydsl<Service> {
                 .values(service.getId(), user.getId()).execute();
     }
 
+
+    public void addServiceToCommand(Long idCommand, Long serviceId, Integer quantity){
+        transactionManager.insert(QAssoCommandService.assoCommandService)
+                .columns(QAssoCommandService.assoCommandService.idService,QAssoCommandService.assoCommandService.idCommand, QAssoCommandService.assoCommandService.quantity)
+                .values(serviceId, idCommand, quantity).execute();
+    }
+
     public void addServiceToUserDriver(Service service, User user){
         transactionManager.insert(QAssoAccompanistUserService.assoAccompanistUserService)
                 .columns(QAssoAccompanistUserService.assoAccompanistUserService.idService, QAssoAccompanistUserService.assoAccompanistUserService.idAccompanistUser)
