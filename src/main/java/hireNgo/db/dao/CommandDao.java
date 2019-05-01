@@ -40,6 +40,16 @@ public class CommandDao extends CrudDaoQuerydsl<Command> {
                 .fetch();
 
     }
+    public List<Command> findAllByStatusAndUserAccompanist(CommandStatus commandStatus, Long idAccompanist){
+        return selectFrom()
+                .from(QAssoCommandService.assoCommandService)
+                .join(QAssoCommandService.assoCommandService)
+                .where(QAssoCommandService.assoCommandService.idUserAccompanist.eq(idAccompanist))
+                .where(QAssoCommandService.assoCommandService.idCommand.eq(QCommand.command.id))
+                .where(QCommand.command.status.eq(commandStatus.name()))
+                .fetch();
+
+    }
     public List<Command> findAllAndUserAccompanist(Long idUserAccompanist){
         return selectFrom()
                 .from(QAssoCommandService.assoCommandService)

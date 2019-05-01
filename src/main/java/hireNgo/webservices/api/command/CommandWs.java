@@ -89,6 +89,20 @@ public class CommandWs {
     }
 
     @GET
+    @Path("/historyAccompanist/{email}")
+    @ApiOperation("Get commands available")
+    public List<ReturnedCommandBean> getHistoryAccompanistCommands(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        return commandDao.findAllByStatusAndUserAccompanist(CommandStatus.FINISHED, user.getId()).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
+    }
+
+    @GET
     @Path("/current/{email}")
     @ApiOperation("Get commands available")
     public List<ReturnedCommandBean> getCurrentCommands(@PathParam("email") String email) {
