@@ -54,6 +54,28 @@ public class ServicesWs {
         for(String idService : servicesBean.getServiceIds()){
             Service service = serviceDao.findById(Long.parseLong(idService));
             if(service != null){
+                serviceDao.addServiceToUserDriver(service, user);
+                services.add(service);
+            }
+        }
+        return services;
+    }
+
+    @POST
+    @Path("/updateAccompanist")
+    @ApiOperation("Get services by user email)")
+    public List<Service> createServicesForUserAccompanistEmail(ServicesBean servicesBean) {
+        if(servicesBean == null || servicesBean.getServiceIds() == null || servicesBean.getServiceIds().size() == 0){
+            throw new WsException(ProjectWsError.NO_SERVICES);
+        }
+        User user = userDao.findByEmail(servicesBean.getUserEmail());
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        List<Service> services = new ArrayList<>();
+        for(String idService : servicesBean.getServiceIds()){
+            Service service = serviceDao.findById(Long.parseLong(idService));
+            if(service != null){
                 serviceDao.addServiceToUserAccompanist(service, user);
                 services.add(service);
             }
