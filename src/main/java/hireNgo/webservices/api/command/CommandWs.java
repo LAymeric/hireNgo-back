@@ -1,9 +1,12 @@
 package hireNgo.webservices.api.command;
 
 import com.coreoz.plume.jersey.errors.WsException;
+import hireNgo.db.dao.AssoCommandServiceDao;
 import hireNgo.db.dao.CommandDao;
+import hireNgo.db.dao.ServiceDao;
 import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.Command;
+import hireNgo.db.generated.Service;
 import hireNgo.db.generated.User;
 import hireNgo.services.command.CommandService;
 import hireNgo.webservices.api.command.bean.ChooseCommandBean;
@@ -18,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,13 +35,17 @@ public class CommandWs {
     private final UserDao userDao;
     private final CommandDao commandDao;
     private final CommandService commandService;
+    private final ServiceDao serviceDao;
+    private final AssoCommandServiceDao AssoCommandServiceDao;
 
     @Inject
-    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService){
+    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
 
         this.userDao = userDao;
         this.commandDao = commandDao;
         this.commandService = commandService;
+        this.serviceDao = serviceDao;
+        AssoCommandServiceDao = assoCommandServiceDao;
     }
 
     @GET
@@ -45,6 +53,25 @@ public class CommandWs {
     @ApiOperation("Get commands available")
     public List<ReturnedCommandBean> getAvailableCommands() {
         return commandDao.findAllByStatus(CommandStatus.WAITING).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/availableAccompanist/{email}")
+    @ApiOperation("Get commands available")
+    public List<ReturnedCommandBean> getAvailableCommandsForAccompanist(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        List<Service> servicesOfAccompanist = serviceDao.fetchServiceForAccompanist(user.getId());
+        List<Command> commands = new ArrayList<>();
+        for(Service service : servicesOfAccompanist){
+            commands.addAll(commandDao.findWithCorrespondingServiceWithNoValidation(service));
+        }
+        return commands.stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
     }
 
     @GET
@@ -130,6 +157,29 @@ public class CommandWs {
         toUptadeCommand.setStatus(CommandStatus.IN_PROGRESS.name());
         toUptadeCommand.setIdUserDriver(user.getId());
        return commandDao.save(toUptadeCommand);
+    }
+
+    @POST
+    @Path("/chooseForAccompanist")
+    public Command chooseForAccompanist(ChooseCommandBean commandBean){
+        //Check si le front a envoyé une commande
+        if(commandBean == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        User user = userDao.findByEmail(commandBean.getEmail());
+        //Check si l'utilisateur existe
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        Command toUptadeCommand = commandDao.findById(Long.parseLong(commandBean.getCommandId()));
+        if(toUptadeCommand == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        List<Service> correspondingServices = serviceDao.fetchServiceForAccompanistAndThisCommand(user.getId(), toUptadeCommand.getId());
+        for(Service service : correspondingServices){
+            AssoCommandServiceDao.addAccopanistToService(user.getId(), toUptadeCommand.getId(), service.getId());
+        }
+        return toUptadeCommand;
     }
 
     @POST

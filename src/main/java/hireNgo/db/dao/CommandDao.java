@@ -2,8 +2,7 @@ package hireNgo.db.dao;
 
 import com.coreoz.plume.db.querydsl.crud.CrudDaoQuerydsl;
 import com.coreoz.plume.db.querydsl.transaction.TransactionManagerQuerydsl;
-import hireNgo.db.generated.Command;
-import hireNgo.db.generated.QCommand;
+import hireNgo.db.generated.*;
 import hireNgo.webservices.api.users.bean.CommandStatus;
 
 import javax.inject.Inject;
@@ -18,6 +17,17 @@ public class CommandDao extends CrudDaoQuerydsl<Command> {
     public List<Command> findAllByStatus(CommandStatus commandStatus){
         return selectFrom()
                 .where(QCommand.command.status.eq(commandStatus.name()))
+                .fetch();
+    }
+
+    public List<Command> findWithCorrespondingServiceWithNoValidation(Service service){
+        return selectFrom()
+                .from(QAssoCommandService.assoCommandService)
+                .join(QAssoCommandService.assoCommandService)
+                .where(QAssoCommandService.assoCommandService.idService.eq(service.getId()))
+                .where(QAssoCommandService.assoCommandService.idCommand.eq(QCommand.command.id))
+                .where(QAssoCommandService.assoCommandService.idUserAccompanist.isNull())
+                .where(QCommand.command.status.eq(CommandStatus.WAITING.name()))
                 .fetch();
     }
 

@@ -1,5 +1,7 @@
 package hireNgo.webservices.api.command.bean;
 
+import java.util.List;
+
 public class ReturnedCommandBean {
     private String start;
     private String end;
@@ -8,7 +10,16 @@ public class ReturnedCommandBean {
     private String duration;
     private String distance;
     private String price;
+    private List<String> services;
     private String id;
+
+    public List<String> getServices() {
+        return services;
+    }
+
+    public void setServices(List<String> services) {
+        this.services = services;
+    }
 
     public String getPrice() {
         return price;
