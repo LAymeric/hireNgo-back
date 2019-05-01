@@ -34,6 +34,7 @@ public class CommandService {
         returnedCommandBean.setStartTime(command.getStartTime());
         returnedCommandBean.setId(command.getId().toString());
         returnedCommandBean.setPrice(command.getFinalPrice());
+        returnedCommandBean.setStatus(command.getStatus());
         User user = userDao.findById(command.getIdUserFront());
         returnedCommandBean.setUserName(user.getFirstname() + " " + user.getLastname());
         List<Service> services = serviceDao.fetchAllForCommand(command.getId());

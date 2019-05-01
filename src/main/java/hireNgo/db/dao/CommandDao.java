@@ -27,7 +27,9 @@ public class CommandDao extends CrudDaoQuerydsl<Command> {
                 .where(QAssoCommandService.assoCommandService.idService.eq(service.getId()))
                 .where(QAssoCommandService.assoCommandService.idCommand.eq(QCommand.command.id))
                 .where(QAssoCommandService.assoCommandService.idUserAccompanist.isNull())
-                .where(QCommand.command.status.eq(CommandStatus.WAITING.name()))
+                .where(QCommand.command.status.ne(CommandStatus.FINISHED.name()))
+                .where(QCommand.command.status.ne(CommandStatus.PAID.name()))
+                .where(QCommand.command.status.ne(CommandStatus.INCOMPLETE.name()))
                 .fetch();
     }
 
@@ -35,6 +37,15 @@ public class CommandDao extends CrudDaoQuerydsl<Command> {
         return selectFrom()
                 .where(QCommand.command.status.eq(commandStatus.name()))
                 .where(QCommand.command.idUserDriver.eq(idDriver))
+                .fetch();
+
+    }
+    public List<Command> findAllAndUserAccompanist(Long idUserAccompanist){
+        return selectFrom()
+                .from(QAssoCommandService.assoCommandService)
+                .join(QAssoCommandService.assoCommandService)
+                .where(QAssoCommandService.assoCommandService.idUserAccompanist.eq(idUserAccompanist))
+                .where(QAssoCommandService.assoCommandService.idCommand.eq(QCommand.command.id))
                 .fetch();
 
     }

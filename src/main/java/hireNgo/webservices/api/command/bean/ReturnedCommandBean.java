@@ -12,6 +12,15 @@ public class ReturnedCommandBean {
     private String price;
     private List<String> services;
     private String id;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public List<String> getServices() {
         return services;

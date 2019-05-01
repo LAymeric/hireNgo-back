@@ -101,6 +101,19 @@ public class CommandWs {
         }
         return commandDao.findAllByStatusAndUserDriver(CommandStatus.IN_PROGRESS, user.getId()).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
     }
+    @GET
+    @Path("/currentForAccompanist/{email}")
+    @ApiOperation("Get commands available")
+    public List<ReturnedCommandBean> getCurrentCommandsForAccompanist(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        return commandDao.findAllAndUserAccompanist(user.getId()).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
+    }
 
     @POST
     @Path("/new")
