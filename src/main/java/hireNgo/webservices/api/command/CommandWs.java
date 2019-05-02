@@ -9,10 +9,8 @@ import hireNgo.db.generated.Command;
 import hireNgo.db.generated.Service;
 import hireNgo.db.generated.User;
 import hireNgo.services.command.CommandService;
-import hireNgo.webservices.api.command.bean.ChooseCommandBean;
-import hireNgo.webservices.api.command.bean.CommandBean;
-import hireNgo.webservices.api.command.bean.ReturnedCommandBean;
-import hireNgo.webservices.api.command.bean.UpdateCommandBean;
+import hireNgo.services.pdf.PdfService;
+import hireNgo.webservices.api.command.bean.*;
 import hireNgo.webservices.api.services.bean.ServiceBean;
 import hireNgo.webservices.api.users.bean.CommandStatus;
 import hireNgo.webservices.exeptions.ProjectWsError;
@@ -38,15 +36,17 @@ public class CommandWs {
     private final CommandDao commandDao;
     private final CommandService commandService;
     private final ServiceDao serviceDao;
+    private final PdfService pdfService;
     private final AssoCommandServiceDao AssoCommandServiceDao;
 
     @Inject
-    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
+    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, PdfService pdfService, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
 
         this.userDao = userDao;
         this.commandDao = commandDao;
         this.commandService = commandService;
         this.serviceDao = serviceDao;
+        this.pdfService = pdfService;
         AssoCommandServiceDao = assoCommandServiceDao;
     }
 
@@ -55,6 +55,15 @@ public class CommandWs {
     @ApiOperation("Get commands available")
     public List<ReturnedCommandBean> getAvailableCommands() {
         return commandDao.findAllByStatus(CommandStatus.WAITING).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/pdf/{commandId}")
+    @ApiOperation("Get commands available")
+    public FileBean getPdf(@PathParam("commandId") String commandId) {
+        Command command = commandDao.findById(Long.parseLong(commandId));
+        pdfService.createBill(command);
+        return pdfService.getPdfFileBean(command);
     }
 
     @GET
