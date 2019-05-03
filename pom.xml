@@ -66,6 +66,12 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- dependency used for XLSX file format -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.17</version>
+		</dependency>
 		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>

@@ -40,8 +40,13 @@ public class CommandService {
         User user = userDao.findById(command.getIdUserFront());
         if(user == null){
             return null;
+        }else{
+            returnedCommandBean.setUserName(user.getFirstname() + " " + user.getLastname());
         }
-        returnedCommandBean.setUserName(user.getFirstname() + " " + user.getLastname());
+        User userDriver = userDao.findById(command.getIdUserDriver());
+        if(userDriver != null){
+            returnedCommandBean.setUserDirverName(userDriver.getFirstname() + " " + userDriver.getLastname());
+        }
         List<Service> services = serviceDao.fetchAllForCommand(command.getId());
         returnedCommandBean.setServices(services.stream().map(Service::getName).collect(Collectors.toList()));
         return returnedCommandBean;

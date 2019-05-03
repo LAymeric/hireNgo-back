@@ -9,6 +9,7 @@ import hireNgo.db.generated.Command;
 import hireNgo.db.generated.Service;
 import hireNgo.db.generated.User;
 import hireNgo.services.command.CommandService;
+import hireNgo.services.pdf.ExportService;
 import hireNgo.services.pdf.PdfService;
 import hireNgo.webservices.api.command.bean.*;
 import hireNgo.webservices.api.services.bean.ServiceBean;
@@ -37,16 +38,18 @@ public class CommandWs {
     private final CommandService commandService;
     private final ServiceDao serviceDao;
     private final PdfService pdfService;
+    private final ExportService exportService;
     private final AssoCommandServiceDao AssoCommandServiceDao;
 
     @Inject
-    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, PdfService pdfService, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
+    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, PdfService pdfService, ExportService exportService, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
 
         this.userDao = userDao;
         this.commandDao = commandDao;
         this.commandService = commandService;
         this.serviceDao = serviceDao;
         this.pdfService = pdfService;
+        this.exportService = exportService;
         AssoCommandServiceDao = assoCommandServiceDao;
     }
 
@@ -64,6 +67,13 @@ public class CommandWs {
         Command command = commandDao.findById(Long.parseLong(commandId));
         pdfService.createBill(command);
         return pdfService.getPdfFileBean(command);
+    }
+
+    @GET
+    @Path("/export")
+    @ApiOperation("Get commands available")
+    public FileBean getExportXls() {
+        return exportService.sendFile();
     }
 
     @GET

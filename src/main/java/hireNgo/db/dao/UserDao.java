@@ -2,8 +2,7 @@ package hireNgo.db.dao;
 
 import com.coreoz.plume.db.querydsl.crud.CrudDaoQuerydsl;
 import com.coreoz.plume.db.querydsl.transaction.TransactionManagerQuerydsl;
-import hireNgo.db.generated.QUser;
-import hireNgo.db.generated.User;
+import hireNgo.db.generated.*;
 
 import javax.inject.Inject;
 import java.util.List;
