@@ -93,7 +93,13 @@ public class CommandWs {
     @ApiOperation("Get commands available")
     public void paidCommand(@PathParam("commandId") String commandId) {
         Command command = commandDao.findById(Long.parseLong(commandId));
-        command.setStatus(CommandStatus.PAID.name());
+        command.setStatus(CommandStatus.WAITING.name());
+        User user = userDao.findById(command.getIdUserFront());
+        notificationService.sendNotif(user.getPhone(), "Vous avez finalisé votre course. Nous vous préviendrons dès qu'on chauffeur la prendra en charge");
+        List<User> userDrivers = userDao.findAllDrivers();
+        for(User userDriver : userDrivers){
+            notificationService.sendNotif(userDriver.getPhone(), "Une nouvelle course est disponible ! Consultez votre dashboard.");
+        }
         commandDao.save(command);
     }
 
@@ -240,11 +246,9 @@ public class CommandWs {
         if(toUptadeCommand == null){
             throw new WsException(ProjectWsError.NO_COMMAND);
         }
-        toUptadeCommand.setStatus(CommandStatus.WAITING.name());
         for(ServiceBean serviceBean : updateCommandBean.getServices()){
             serviceDao.addServiceToCommand(toUptadeCommand.getId(), Long.parseLong(serviceBean.getIdService()), serviceBean.getQuantity());
         }
-
         //todo calculate price
 
         return commandService.buildReturnedCommandBean(commandDao.save(toUptadeCommand));
@@ -267,10 +271,12 @@ public class CommandWs {
         if(toUptadeCommand == null){
             throw new WsException(ProjectWsError.NO_COMMAND);
         }
+        User userFront = userDao.findById(toUptadeCommand.getIdUserFront());
         List<Service> correspondingServices = serviceDao.fetchServiceForAccompanistAndThisCommand(user.getId(), toUptadeCommand.getId());
         for(Service service : correspondingServices){
             AssoCommandServiceDao.addAccopanistToService(user.getId(), toUptadeCommand.getId(), service.getId());
         }
+        notificationService.sendNotif(userFront.getPhone(), "Votre course a été sélectionnée par un accompagnateur, soyez prêt à partir!");
         return toUptadeCommand;
     }
 
