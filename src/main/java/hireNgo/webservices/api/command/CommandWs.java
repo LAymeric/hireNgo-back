@@ -67,6 +67,24 @@ public class CommandWs {
     }
 
     @GET
+    @Path("/validate/{commandId}")
+    @ApiOperation("Get commands available")
+    public void validateCommand(@PathParam("commandId") String commandId) {
+        Command command = commandDao.findById(Long.parseLong(commandId));
+        command.setStatus(CommandStatus.WAITING.name());
+        commandDao.save(command);
+    }
+
+    @GET
+    @Path("/paid/{commandId}")
+    @ApiOperation("Get commands available")
+    public void paidCommand(@PathParam("commandId") String commandId) {
+        Command command = commandDao.findById(Long.parseLong(commandId));
+        command.setStatus(CommandStatus.PAID.name());
+        commandDao.save(command);
+    }
+
+    @GET
     @Path("/availableAccompanist/{email}")
     @ApiOperation("Get commands available")
     public List<ReturnedCommandBean> getAvailableCommandsForAccompanist(@PathParam("email") String email) {
@@ -142,7 +160,7 @@ public class CommandWs {
 
     @POST
     @Path("/new")
-    public Command creatComande(CommandBean commandBean){
+    public Command createComande(CommandBean commandBean){
         //Check si le front a envoyé une commande
         if(commandBean == null){
             throw new WsException(ProjectWsError.NO_COMMAND);
@@ -153,14 +171,7 @@ public class CommandWs {
             throw new WsException(ProjectWsError.USER_NOT_FOUND);
         }
         Command newCommand = new Command();
-
-        if(user.getIsPremium()){
-            newCommand.setStatus(CommandStatus.INCOMPLETE.name());
-            //Todo services
-        }else{
-            newCommand.setStatus(CommandStatus.WAITING.name());
-        }
-
+        newCommand.setStatus(CommandStatus.INCOMPLETE.name());
         newCommand.setIdUserFront(user.getId());
         newCommand.setDuration(commandBean.getDuration());
         newCommand.setDistance(commandBean.getDistance());
@@ -168,8 +179,7 @@ public class CommandWs {
         newCommand.setEndTime("");//todo calculer avec start time + duration
         newCommand.setStart(commandBean.getStart());
         newCommand.setStartTime(commandBean.getStartTime());
-        //todo calculate price with services
-        Double price = Double.valueOf(newCommand.getDistance()) * 2.5;
+        Double price = Double.valueOf(newCommand.getDistance()) * 2.5; //todo calculate price
         newCommand.setFinalPrice(String.valueOf(price));
 
        return commandDao.save(newCommand);
