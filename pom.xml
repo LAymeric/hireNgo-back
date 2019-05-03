@@ -66,6 +66,12 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- dependency used for texting SMS notifications -->
+		<dependency>
+			<groupId>com.twilio.sdk</groupId>
+			<artifactId>twilio</artifactId>
+			<version>7.37.3</version>
+		</dependency>
 		<!-- dependency used for XLSX file format -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>

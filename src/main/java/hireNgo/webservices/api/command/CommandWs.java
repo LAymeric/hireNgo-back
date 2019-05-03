@@ -9,6 +9,7 @@ import hireNgo.db.generated.Command;
 import hireNgo.db.generated.Service;
 import hireNgo.db.generated.User;
 import hireNgo.services.command.CommandService;
+import hireNgo.services.command.NotificationService;
 import hireNgo.services.pdf.ExportService;
 import hireNgo.services.pdf.PdfService;
 import hireNgo.webservices.api.command.bean.*;
@@ -38,17 +39,19 @@ public class CommandWs {
     private final CommandService commandService;
     private final ServiceDao serviceDao;
     private final PdfService pdfService;
+    private final NotificationService notificationService;
     private final ExportService exportService;
     private final AssoCommandServiceDao AssoCommandServiceDao;
 
     @Inject
-    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, PdfService pdfService, ExportService exportService, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
+    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, PdfService pdfService, NotificationService notificationService, ExportService exportService, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
 
         this.userDao = userDao;
         this.commandDao = commandDao;
         this.commandService = commandService;
         this.serviceDao = serviceDao;
         this.pdfService = pdfService;
+        this.notificationService = notificationService;
         this.exportService = exportService;
         AssoCommandServiceDao = assoCommandServiceDao;
     }
@@ -212,8 +215,10 @@ public class CommandWs {
         if(toUptadeCommand == null){
             throw new WsException(ProjectWsError.NO_COMMAND);
         }
+        User userFront = userDao.findById(toUptadeCommand.getIdUserFront());
         toUptadeCommand.setStatus(CommandStatus.IN_PROGRESS.name());
         toUptadeCommand.setIdUserDriver(user.getId());
+        notificationService.sendNotif(userFront.getPhone(), "Votre course a été sélectionnée par un chauffeur, soyez prêt à partir!");
        return commandDao.save(toUptadeCommand);
     }
 
