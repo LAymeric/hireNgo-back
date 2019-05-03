@@ -2,6 +2,7 @@ package hireNgo;
 
 import java.io.IOException;
 
+import hireNgo.jersey.CORSFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public class WebApplication {
 		ResourceConfig jerseyResourceConfig = injector.getInstance(ResourceConfig.class);
 		// enable Jersey to create objects through Guice Injector instance
 		jerseyResourceConfig.register(new JerseyGuiceFeature(injector));
+		jerseyResourceConfig.register(new CORSFilter());
 		// starts the server
 		GrizzlySetup.start(
 			jerseyResourceConfig,
