@@ -1,11 +1,13 @@
 package hireNgo.services.command;
 
+import com.coreoz.plume.jersey.errors.WsException;
 import hireNgo.db.dao.ServiceDao;
 import hireNgo.db.dao.UserDao;
 import hireNgo.db.generated.Command;
 import hireNgo.db.generated.Service;
 import hireNgo.db.generated.User;
 import hireNgo.webservices.api.command.bean.ReturnedCommandBean;
+import hireNgo.webservices.exeptions.ProjectWsError;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,7 +38,15 @@ public class CommandService {
         returnedCommandBean.setPrice(command.getFinalPrice());
         returnedCommandBean.setStatus(command.getStatus());
         User user = userDao.findById(command.getIdUserFront());
-        returnedCommandBean.setUserName(user.getFirstname() + " " + user.getLastname());
+        if(user == null){
+            return null;
+        }else{
+            returnedCommandBean.setUserName(user.getFirstname() + " " + user.getLastname());
+        }
+        User userDriver = userDao.findById(command.getIdUserDriver());
+        if(userDriver != null){
+            returnedCommandBean.setUserDirverName(userDriver.getFirstname() + " " + userDriver.getLastname());
+        }
         List<Service> services = serviceDao.fetchAllForCommand(command.getId());
         returnedCommandBean.setServices(services.stream().map(Service::getName).collect(Collectors.toList()));
         return returnedCommandBean;

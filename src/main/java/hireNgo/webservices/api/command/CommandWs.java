@@ -9,9 +9,10 @@ import hireNgo.db.generated.Command;
 import hireNgo.db.generated.Service;
 import hireNgo.db.generated.User;
 import hireNgo.services.command.CommandService;
-import hireNgo.webservices.api.command.bean.ChooseCommandBean;
-import hireNgo.webservices.api.command.bean.CommandBean;
-import hireNgo.webservices.api.command.bean.ReturnedCommandBean;
+import hireNgo.services.pdf.ExportService;
+import hireNgo.services.pdf.PdfService;
+import hireNgo.webservices.api.command.bean.*;
+import hireNgo.webservices.api.services.bean.ServiceBean;
 import hireNgo.webservices.api.users.bean.CommandStatus;
 import hireNgo.webservices.exeptions.ProjectWsError;
 import io.swagger.annotations.Api;
@@ -36,15 +37,19 @@ public class CommandWs {
     private final CommandDao commandDao;
     private final CommandService commandService;
     private final ServiceDao serviceDao;
+    private final PdfService pdfService;
+    private final ExportService exportService;
     private final AssoCommandServiceDao AssoCommandServiceDao;
 
     @Inject
-    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
+    public CommandWs(UserDao userDao, CommandDao commandDao, CommandService commandService, ServiceDao serviceDao, PdfService pdfService, ExportService exportService, hireNgo.db.dao.AssoCommandServiceDao assoCommandServiceDao){
 
         this.userDao = userDao;
         this.commandDao = commandDao;
         this.commandService = commandService;
         this.serviceDao = serviceDao;
+        this.pdfService = pdfService;
+        this.exportService = exportService;
         AssoCommandServiceDao = assoCommandServiceDao;
     }
 
@@ -53,6 +58,40 @@ public class CommandWs {
     @ApiOperation("Get commands available")
     public List<ReturnedCommandBean> getAvailableCommands() {
         return commandDao.findAllByStatus(CommandStatus.WAITING).stream().map(commandService::buildReturnedCommandBean).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/pdf/{commandId}")
+    @ApiOperation("Get commands available")
+    public FileBean getPdf(@PathParam("commandId") String commandId) {
+        Command command = commandDao.findById(Long.parseLong(commandId));
+        pdfService.createBill(command);
+        return pdfService.getPdfFileBean(command);
+    }
+
+    @GET
+    @Path("/export")
+    @ApiOperation("Get commands available")
+    public FileBean getExportXls() {
+        return exportService.sendFile();
+    }
+
+    @GET
+    @Path("/validate/{commandId}")
+    @ApiOperation("Get commands available")
+    public void validateCommand(@PathParam("commandId") String commandId) {
+        Command command = commandDao.findById(Long.parseLong(commandId));
+        command.setStatus(CommandStatus.WAITING.name());
+        commandDao.save(command);
+    }
+
+    @GET
+    @Path("/paid/{commandId}")
+    @ApiOperation("Get commands available")
+    public void paidCommand(@PathParam("commandId") String commandId) {
+        Command command = commandDao.findById(Long.parseLong(commandId));
+        command.setStatus(CommandStatus.PAID.name());
+        commandDao.save(command);
     }
 
     @GET
@@ -131,7 +170,7 @@ public class CommandWs {
 
     @POST
     @Path("/new")
-    public Command creatComande(CommandBean commandBean){
+    public Command createComande(CommandBean commandBean){
         //Check si le front a envoyé une commande
         if(commandBean == null){
             throw new WsException(ProjectWsError.NO_COMMAND);
@@ -142,14 +181,7 @@ public class CommandWs {
             throw new WsException(ProjectWsError.USER_NOT_FOUND);
         }
         Command newCommand = new Command();
-
-        if(user.getIsPremium()){
-            newCommand.setStatus(CommandStatus.INCOMPLETE.name());
-            //Todo services
-        }else{
-            newCommand.setStatus(CommandStatus.WAITING.name());
-        }
-
+        newCommand.setStatus(CommandStatus.INCOMPLETE.name());
         newCommand.setIdUserFront(user.getId());
         newCommand.setDuration(commandBean.getDuration());
         newCommand.setDistance(commandBean.getDistance());
@@ -157,8 +189,7 @@ public class CommandWs {
         newCommand.setEndTime("");//todo calculer avec start time + duration
         newCommand.setStart(commandBean.getStart());
         newCommand.setStartTime(commandBean.getStartTime());
-        //todo calculate price with services
-        Double price = Long.valueOf(newCommand.getDistance()) * 2.5;
+        Double price = Double.valueOf(newCommand.getDistance()) * 2.5; //todo calculate price
         newCommand.setFinalPrice(String.valueOf(price));
 
        return commandDao.save(newCommand);
@@ -166,7 +197,7 @@ public class CommandWs {
 
     @POST
     @Path("/choose")
-    public Command chooseComande(ChooseCommandBean commandBean){
+    public Command chooseCommand(ChooseCommandBean commandBean){
         //Check si le front a envoyé une commande
         if(commandBean == null){
             throw new WsException(ProjectWsError.NO_COMMAND);
@@ -185,6 +216,35 @@ public class CommandWs {
         toUptadeCommand.setIdUserDriver(user.getId());
        return commandDao.save(toUptadeCommand);
     }
+
+
+    @POST
+    @Path("/update")
+    public ReturnedCommandBean updateCommand(UpdateCommandBean updateCommandBean){
+        //Check si le front a envoyé une commande
+        if(updateCommandBean == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        User user = userDao.findById(Long.valueOf(updateCommandBean.getIdUser()));
+        //Check si l'utilisateur existe
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        Command toUptadeCommand = commandDao.findById(Long.parseLong(updateCommandBean.getIdCommand()));
+
+        if(toUptadeCommand == null){
+            throw new WsException(ProjectWsError.NO_COMMAND);
+        }
+        toUptadeCommand.setStatus(CommandStatus.WAITING.name());
+        for(ServiceBean serviceBean : updateCommandBean.getServices()){
+            serviceDao.addServiceToCommand(toUptadeCommand.getId(), Long.parseLong(serviceBean.getIdService()), serviceBean.getQuantity());
+        }
+
+        //todo calculate price
+
+        return commandService.buildReturnedCommandBean(commandDao.save(toUptadeCommand));
+    }
+
 
     @POST
     @Path("/chooseForAccompanist")

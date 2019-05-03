@@ -7,12 +7,21 @@ public class ReturnedCommandBean {
     private String end;
     private String startTime;
     private String userName;
+    private String userDirverName;
     private String duration;
     private String distance;
     private String price;
     private List<String> services;
     private String id;
     private String status;
+
+    public String getUserDirverName() {
+        return userDirverName;
+    }
+
+    public void setUserDirverName(String userDirverName) {
+        this.userDirverName = userDirverName;
+    }
 
     public String getStatus() {
         return status;
