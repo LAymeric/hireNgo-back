@@ -66,7 +66,7 @@ public class UserWs {
         user.setFirstname(userBean.getFirstname());
         user.setLastname(userBean.getLastname());
         user.setEmail(userBean.getEmail());
-        user.setPassword(userBean.getPassword());//todo salt paswword
+        user.setPassword(Utils.hashPassword(userBean.getPassword()));//todo salt paswword
         user.setType(userBean.getType());
         user.setAddress(userBean.getAddress());
         user.setBirthdate(userBean.getBirthday());
@@ -81,8 +81,11 @@ public class UserWs {
     @Path("/login")
     @ApiOperation("Login")
     public ReturnedUserBean login(LoginUserBean loginUserBean) {
-        User user = userDao.findByEmailAndPassword(loginUserBean.getEmail(), loginUserBean.getPassword());
+        User user = userDao.findByEmail(loginUserBean.getEmail());
         if(user == null){
+            throw new WsException(ProjectWsError.NO_USER);
+        }
+        if(!Utils.isCorect(user.getPassword(), loginUserBean.getPassword())){
             throw new WsException(ProjectWsError.NO_USER);
         }
         return userService.buildReturnedUserBean(user);
