@@ -198,7 +198,7 @@ public class CommandWs {
         newCommand.setEndTime("");//todo calculer avec start time + duration
         newCommand.setStart(commandBean.getStart());
         newCommand.setStartTime(commandBean.getStartTime());
-        Double price = Double.valueOf(newCommand.getDistance()) * 2.5; //todo calculate price
+        Double price = Double.valueOf(newCommand.getDistance()) * 2.5; //prix sans service
         newCommand.setFinalPrice(String.valueOf(price));
 
        return commandDao.save(newCommand);
@@ -246,11 +246,13 @@ public class CommandWs {
         if(toUptadeCommand == null){
             throw new WsException(ProjectWsError.NO_COMMAND);
         }
+        double priceFinal = Double.parseDouble(toUptadeCommand.getFinalPrice());
         for(ServiceBean serviceBean : updateCommandBean.getServices()){
+            Service service = serviceDao.findById(Long.parseLong(serviceBean.getIdService()));
+            priceFinal +=Double.parseDouble( service.getPrice()) * serviceBean.getQuantity();
             serviceDao.addServiceToCommand(toUptadeCommand.getId(), Long.parseLong(serviceBean.getIdService()), serviceBean.getQuantity());
         }
-        //todo calculate price
-
+        toUptadeCommand.setFinalPrice(Double.toString(priceFinal));
         return commandService.buildReturnedCommandBean(commandDao.save(toUptadeCommand));
     }
 
