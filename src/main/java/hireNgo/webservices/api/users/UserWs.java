@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Path("/users")
@@ -74,6 +76,7 @@ public class UserWs {
         user.setPhone(userBean.getPhone());
         user.setCountry(userBean.getCountry());
         user.setPostalCode(userBean.getPostalCode());
+        user.setRegistrationDate(LocalDate.now());
         return userService.buildReturnedUserBean(userDao.save(user)); //sauvegarde en BDD notre utilisateur
     }
 
