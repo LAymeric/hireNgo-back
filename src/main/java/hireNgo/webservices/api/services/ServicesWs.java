@@ -115,6 +115,37 @@ public class ServicesWs {
     }
 
     @GET
+    @Path("/accompanist/available/{email}")
+    @ApiOperation("Get services by user email)")
+    public List<ReturnedServiceBean> getMyServicesAvailableForAccompanist(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        List<Service> alreadyHas = serviceDao.fetchAllServiceForAccompanist(user.getId());
+        List<Service> all = serviceDao.fetchAllAvailableServiceForAccompanist();
+        List<Service> finalList = all.stream().filter(item -> !alreadyHas.contains(item)).collect(Collectors.toList());
+        return finalList.stream().map(servicesService::buildReturnedServicerBean).collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/accompanist/{email}")
+    @ApiOperation("Get services by user email)")
+    public List<ReturnedServiceBean> getServicesAvailableForAccompanist(@PathParam("email") String email) {
+        if(email == null){
+            throw new WsException(ProjectWsError.NO_EMAIL);
+        }
+        User user = userDao.findByEmail(email);
+        if(user == null){
+            throw new WsException(ProjectWsError.USER_NOT_FOUND);
+        }
+        return serviceDao.fetchAllServiceForAccompanist(user.getId()).stream().map(servicesService::buildReturnedServicerBean).collect(Collectors.toList());
+    }
+
+    @GET
     @Path("/accompanist")
     @ApiOperation("Get services by user email)")
     public List<Service> getServicesForAccompanists() {

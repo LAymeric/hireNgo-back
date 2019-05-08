@@ -48,6 +48,28 @@ public class ServiceDao extends CrudDaoQuerydsl<Service> {
                 .fetchFirst();
     }
 
+
+    public List<Service> fetchAllServiceForAccompanist(Long userId){
+        return selectFrom()
+                .from(QAssoAccompanistUserService.assoAccompanistUserService)
+                .join(QAssoAccompanistUserService.assoAccompanistUserService)
+                .where(QService.service.isAccompanist.eq(true))
+                .where(QAssoAccompanistUserService.assoAccompanistUserService.idAccompanistUser.eq(userId))
+                .where(QService.service.id.eq(QAssoAccompanistUserService.assoAccompanistUserService.idService))
+                .distinct()
+                .fetch();
+    }
+
+
+    public List<Service> fetchAllAvailableServiceForAccompanist(){
+        return selectFrom()
+                .from(QAssoAccompanistUserService.assoAccompanistUserService)
+                .join(QAssoAccompanistUserService.assoAccompanistUserService)
+                .where(QService.service.isAccompanist.eq(true))
+                .distinct()
+                .fetch();
+    }
+
     public List<Service> fetchServiceForAccompanist(Long userId){
         return selectFrom()
                 .from(QAssoAccompanistUserService.assoAccompanistUserService)
